@@ -1,0 +1,48 @@
+# 🔊 Smart Speaker 2.1 — прошивка ESP32
+
+**Мікропрограма центрального менеджера колонки (PlatformIO, C++, ESP-WROOM-32).**
+
+Приймає аудіопотік по Bluetooth (A2DP Sink) і транслює його по I2S на DSP ADAU1401. Паралельно тримає BLE GATT-сервер для мобільного [smart-speaker-app](https://github.com/MalehaKasper/smart-speaker-app) — прийом гучності/джерела/коефіцієнтів EQ, відправка сповіщень про фізичний енкодер. Керує DSP по I2C виключно через Safeload-регістри (без клацань), обробляє роторний енкодер і ІЧ-пульт, виводить стан на екран TM1650, підсвічує бурштиновий VU-метр гучності на WS2812B. Налаштування зберігаються в NVS. Повна історія рішень — у `openspec/changes/`.
+
+## 📌 Статус
+
+- [x] Каркас проєкту: `platformio.ini`, розбиття на модулі (`audio_input`, `ble_server`, `dsp_controller`, `inputs`, `display`, `led_strip`, `storage`)
+- [x] A2DP Sink → I2S міст (ESP32-A2DP)
+- [x] BLE GATT-сервер: прийом `0x01` гучність / `0x02` джерело / `0x03` коефіцієнти EQ, notify гучності
+- [x] I2C-керування ADAU1401 через Safeload — **адреси регістрів заглушкові**, потребують реального експорту з SigmaStudio-проєкту DSP
+- [x] Енкодер на апаратних перериваннях, ІЧ-приймач (IRremote)
+- [x] TM1650 (спрощений цифровий вивід гучності/джерела)
+- [x] WS2812B VU-метр, колір — виключно бурштиновий (Amber)
+- [x] NVS: збереження гучності, джерела, коефіцієнтів EQ
+- [ ] Мапінг кодів ІЧ-пульта на дії (потребує навчання/зчитування реальних кодів)
+- [ ] Перевірка на реальному залізі (DSP-регістри, стабільність A2DP-буфера)
+
+## 🛠 Збірка
+
+Потрібен [PlatformIO](https://platformio.org/) (CLI або VS Code розширення).
+
+```bash
+pio run              # збірка
+pio run -t upload    # прошивка через USB (Type-C)
+pio device monitor    # серійний монітор, 115200 baud
+```
+
+## 🧩 Архітектура
+
+```
+src/
+├── main.cpp            Ініціалізація модулів, зв'язування колбеків
+├── audio_input.cpp      A2DP Sink → I2S
+├── ble_server.cpp        BLE GATT: control-характеристика (write), notify-характеристика
+├── dsp_controller.cpp    I2C-майстер ADAU1401, Safeload-запис гучності/джерела/EQ
+├── inputs.cpp            Енкодер (переривання) + ІЧ (IRremote)
+├── display.cpp           TM1650 по I2C
+├── led_strip.cpp         WS2812B VU-метр (FastLED)
+└── storage.cpp           NVS (Preferences): гучність, джерело, EQ
+```
+
+Пінаут і константи — `include/config.h`.
+
+## 🔗 Пов'язаний проєкт
+
+Мобільний додаток керування та рум-корекції: [smart-speaker-app](https://github.com/MalehaKasper/smart-speaker-app) (Flutter). Протокол BLE-обміну описаний в `openspec/specs/` обох репозиторіїв і має лишатись синхронізованим.
