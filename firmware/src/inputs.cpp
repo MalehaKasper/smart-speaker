@@ -42,6 +42,10 @@ void begin(const Callbacks& cb) {
   attachInterrupt(digitalPinToInterrupt(PIN_ENCODER_B), onEncoderChange, CHANGE);
   attachInterrupt(digitalPinToInterrupt(PIN_ENCODER_BUTTON), onEncoderButton, FALLING);
 
+  // IRremote v4 на ESP32 за замовчуванням використовує апаратний RMT-периферал
+  // (не голі переривання) — це припущення з документації бібліотеки, не
+  // перевірене реальною збіркою в цьому середовищі (немає pio). Підтвердити
+  // під час першої збірки: лог бібліотеки при компіляції називає бекенд.
   IrReceiver.begin(PIN_IR_RECEIVE, DISABLE_LED_FEEDBACK);
 }
 

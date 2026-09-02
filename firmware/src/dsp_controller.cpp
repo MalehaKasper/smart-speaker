@@ -1,10 +1,17 @@
 #include "dsp_controller.h"
 
+#include <Arduino.h>
 #include <Wire.h>
 
 #include "config.h"
 
 namespace {
+
+// Консервативна оцінка часу Selfboot ADAU1401 (завантаження власної програми
+// з EEPROM по I2C) — точне значення й наявність апаратного сигналу готовності
+// не підтверджені (потребують даташиту/спостереження на реальній платі, див.
+// openspec/changes/harden-firmware-realtime-architecture/design.md, Open Questions).
+constexpr uint32_t DSP_SELFBOOT_DELAY_MS = 200;
 
 // Адреси Safeload- та цільових регістрів залежать від конкретної SigmaStudio-схеми
 // і мають бути згенеровані експортом проєкту DSP (наразі — заглушки).
@@ -37,7 +44,11 @@ void safeload(uint16_t targetRegister, const uint8_t* data, size_t len) {
 
 namespace DspController {
 
-void begin() { Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL); }
+void begin() {
+  Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
+  // Не торкатись I2C-шини DSP до завершення його Selfboot — див. коментар вище.
+  delay(DSP_SELFBOOT_DELAY_MS);
+}
 
 void setVolume(uint8_t volume) {
   const uint8_t value = volume;
