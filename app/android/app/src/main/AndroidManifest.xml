@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- minSdk 31 (build.gradle.kts) — лише сучасна модель BLE-дозволів, без ACCESS_FINE_LOCATION -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Мікрофон — для запису відповіді приміщення під час авто рум-корекції (build-mobile-app) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:label="smart_speaker_app"
         android:name="${applicationName}"

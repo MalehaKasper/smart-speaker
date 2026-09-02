@@ -19,7 +19,10 @@ android {
         applicationId = "com.malehakasper.smart_speaker_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // minSdk 31 (Android 12) навмисно: BLUETOOTH_SCAN/BLUETOOTH_CONNECT runtime-дозволи
+        // без прив'язки до геолокації з'явились саме в Android 12 — орієнтир Pixel 9 (Android 14/15)
+        // робить підтримку старіших версій непотрібною складністю.
+        minSdk = 31
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

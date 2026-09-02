@@ -38,12 +38,17 @@ dependencies:
   # BLE-клієнт для зв'язку з ESP32 (гучність, джерело, EQ-коефіцієнти)
   flutter_blue_plus: ^1.35.3
   # Захоплення звуку з мікрофона для рум-корекції (Auto-EQ)
-  record: ^5.2.1
+  # ^5.2.1 давала кернел-краш при збірці Android APK — record_linux 0.7.2
+  # не реалізовував RecordMethodChannelPlatformInterface.startStream з
+  # record_platform_interface 1.6.0 (виявлено `flutter build apk` у цій сесії).
+  record: ^7.1.1
   # FFT для аналізу калібрувального сигналу
   fftea: ^1.5.0
-  # Локальне збереження пресетів EQ та MAC-адреси колонки
+  # Локальне збереження пресетів EQ, історії загальних налаштувань та MAC-адреси колонки
   shared_preferences: ^2.3.3
   permission_handler: ^11.3.1
+  # Спільний стан (BLE-з'єднання, гучність/джерело) між екранами
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
