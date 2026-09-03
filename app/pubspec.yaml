@@ -49,6 +49,8 @@ dependencies:
   permission_handler: ^11.3.1
   # Спільний стан (BLE-з'єднання, гучність/джерело) між екранами
   flutter_riverpod: ^2.6.1
+  # Space Grotesk + IBM Plex Mono — типографіка з дизайну (Smart Speaker EQ.dc.html)
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

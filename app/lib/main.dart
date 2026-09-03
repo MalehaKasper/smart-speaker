@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'ble/ble_connection.dart';
 import 'ui/home_screen.dart';
 import 'ui/pairing_screen.dart';
+import 'ui/theme.dart';
 
 void main() {
   runApp(const ProviderScope(child: SmartSpeakerApp()));
@@ -16,7 +17,7 @@ class SmartSpeakerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Smart Speaker EQ',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange)),
+      theme: buildAppTheme(),
       home: const StartupScreen(),
     );
   }
@@ -50,6 +51,9 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      backgroundColor: AppColors.screenBg,
+      body: const Center(child: CircularProgressIndicator(color: AppColors.accent)),
+    );
   }
 }
